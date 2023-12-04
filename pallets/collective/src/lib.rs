@@ -46,13 +46,21 @@ use scale_info::TypeInfo;
 use sp_io::storage;
 use sp_runtime::{traits::Hash, RuntimeDebug};
 use sp_std::{marker::PhantomData, prelude::*, result};
+use frame_support::traits::GenesisBuild;
+use sp_runtime::generic;
 
+use codec::{Decode, Encode, MaxEncodedLen};
 use frame_support::{
-    codec::{Decode, Encode, MaxEncodedLen},
-    dispatch::{
-        DispatchError, DispatchResultWithPostInfo, Dispatchable, GetDispatchInfo, Pays,
+    dispatch::
+    {
+        DispatchError, DispatchResultWithPostInfo, GetDispatchInfo, Pays,
         PostDispatchInfo,
     },
+};
+
+use sp_runtime::traits::Dispatchable;
+
+use frame_support::{
     ensure,
     traits::{
         Backing, ChangeMembers, EnsureOrigin, Get, GetBacking, InitializeMembers, StorageVersion,
@@ -171,7 +179,7 @@ pub struct Votes<AccountId, BlockNumber> {
 pub mod pallet {
     use super::*;
     use frame_support::pallet_prelude::*;
-    use frame_system::pallet_prelude::*;
+    use frame_system::pallet_prelude::{*, BlockNumberFor};
 
     /// The current storage version.
     const STORAGE_VERSION: StorageVersion = StorageVersion::new(4);
@@ -186,7 +194,7 @@ pub mod pallet {
     pub trait Config<I: 'static = ()>: frame_system::Config {
         /// The runtime origin type.
         type RuntimeOrigin: From<RawOrigin<Self::AccountId, I>>;
-
+        type Block: Block;
         /// The runtime call dispatch type.
         type Proposal: Parameter
             + Dispatchable<
@@ -199,8 +207,10 @@ pub mod pallet {
         type RuntimeEvent: From<Event<Self, I>>
             + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
+        
+
         /// The time-out for council motions.
-        type MotionDuration: Get<Self::BlockNumber>;
+        type MotionDuration: Block;
 
         /// Maximum number of proposals allowed to be active in parallel.
         type MaxProposals: Get<ProposalIndex>;
@@ -282,7 +292,7 @@ pub mod pallet {
     #[pallet::storage]
     #[pallet::getter(fn voting)]
     pub type Voting<T: Config<I>, I: 'static = ()> =
-        StorageMap<_, Identity, T::Hash, Votes<T::AccountId, T::BlockNumber>, OptionQuery>;
+        StorageMap<_, Identity, T::Hash, Votes< T::AccountId, <T as Config<I>>::Block >, OptionQuery>;
 
     /// Proposals so far.
     #[pallet::storage]
@@ -519,7 +529,7 @@ pub mod pallet {
             origin: OriginFor<T>,
             proposal: Box<<T as Config<I>>::Proposal>,
             #[pallet::compact] length_bound: u32,
-            duration: T::BlockNumber,
+            duration: <T as Config<I>>::Block,
         ) -> DispatchResultWithPostInfo {
             let who = ensure_signed(origin.clone())?;
             ensure!(T::CanPropose::can_propose(&who), Error::<T, I>::NotMember);
@@ -752,7 +762,7 @@ impl<T: Config<I>, I: 'static> Pallet<T, I> {
         threshold: MemberCount,
         proposal: Box<<T as Config<I>>::Proposal>,
         length_bound: MemberCount,
-        duration: T::BlockNumber,
+        duration: <T as Config<I>>::Block,
     ) -> Result<(u32, u32), DispatchError> {
         let proposal_len = proposal.encoded_size();
         ensure!(
