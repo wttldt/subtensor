@@ -219,7 +219,7 @@ impl Default for Data {
 #[cfg_attr(test, derive(frame_support::DefaultNoBound))]
 #[scale_info(skip_type_params(FieldLimit))]
 pub struct CommitmentInfo<FieldLimit: Get<u32>> {
-	pub fields: BoundedVec<(Data, Data), FieldLimit>,
+	pub fields: BoundedVec<Data, FieldLimit>,
 }
 
 /// Information concerning the identity of the controller of an account.
