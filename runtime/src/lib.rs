@@ -68,7 +68,7 @@ pub type Signature = MultiSignature;
 pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
 
 /// Balance of an account.
-pub type Balance = u128;
+pub type Balance = u64;
 
 /// Index of a transaction in the chain.
 pub type Nonce = u32;
@@ -236,7 +236,7 @@ impl pallet_timestamp::Config for Runtime {
 }
 
 /// Existential deposit.
-pub const EXISTENTIAL_DEPOSIT: u128 = 500;
+pub const EXISTENTIAL_DEPOSIT: u64 = 500;
 
 impl pallet_balances::Config for Runtime {
 	type MaxLocks = ConstU32<50>;
@@ -247,7 +247,7 @@ impl pallet_balances::Config for Runtime {
 	/// The ubiquitous event type.
 	type RuntimeEvent = RuntimeEvent;
 	type DustRemoval = ();
-	type ExistentialDeposit = ConstU128<EXISTENTIAL_DEPOSIT>;
+	type ExistentialDeposit = ConstU64<EXISTENTIAL_DEPOSIT>;
 	type AccountStore = System;
 	type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 	type FreezeIdentifier = ();
@@ -443,6 +443,42 @@ impl pallet_admin_utils::AuraInterface<AuraId, ConstU32<32>> for AuraPalletIntrf
     }
 }
 
+const TAO: u64 = 1_000_000_000;
+
+parameter_types! {
+	pub const AssetDeposit: Balance = 100 * TAO;
+	pub const ApprovalDeposit: Balance = 1 * TAO;
+	pub const StringLimit: u32 = 50;
+	pub const MetadataDepositBase: Balance = TAO / 100;
+	pub const MetadataDepositPerByte: Balance = TAO / 1000;
+}
+
+use frame_support::traits::AsEnsureOriginWithArg;
+use frame_system::EnsureSigned;
+
+impl pallet_assets::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Balance = u64;
+	type AssetId = u32;
+	type AssetIdParameter = codec::Compact<u32>;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type AssetAccountDeposit = ConstU64<TAO>;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = StringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type CallbackHandle = ();
+	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+	type RemoveItemsLimit = ConstU32<1000>;
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
     pub struct Runtime
@@ -456,7 +492,8 @@ construct_runtime!(
         Subtensor: pallet_subtensor,
         Sudo: pallet_sudo,
         Commitments: pallet_commitments,
-        AdminUtils: pallet_admin_utils
+        AdminUtils: pallet_admin_utils,
+        Assets: pallet_assets
     }
 );
 
@@ -802,6 +839,7 @@ mod benches {
         [pallet_registry, Registry]
         [pallet_commitments, Commitments]
         [pallet_admin_utils, AdminUtils]
+        [pallet_assets, Assets]
     );
 }
 
