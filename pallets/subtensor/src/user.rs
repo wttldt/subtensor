@@ -110,7 +110,7 @@ impl<T: Config> Pallet<T>
                 Self::create_new_pool(
                     Token::SubnetToken(netuid_to_register, 1), 
                     Token::TAO(lock_amount)
-                ),
+                ).is_ok(),
                 Error::<T>::FailureCreatingSubnetToken
             );
         }

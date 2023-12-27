@@ -98,7 +98,8 @@ pub mod pallet {
     }
 }
 
-impl<T: Config> Pallet<T> {
+impl<T: Config> Pallet<T> 
+{
 	/// Price of in_token per out_token 
 	pub fn price(from: Token, to: Token) -> u64 {
 		0
@@ -109,7 +110,7 @@ impl<T: Config> Pallet<T> {
 		0
 	}
 
-	pub fn new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
+	pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
 		Ok(0) // pool id
 	}
 

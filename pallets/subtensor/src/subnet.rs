@@ -1,8 +1,11 @@
-use crate::
+use
 {
-    math::       
+    crate::
     {
-        *
+        math::       
+        {
+            *
+        }
     },
     pallet_swap::
     {
@@ -776,11 +779,13 @@ impl<T: Config> Pallet<T>
         return bonds;
     }
 
-    pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error>
+    pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>>
     {
+        return pallet_swap::create_new_pool(from, to);
     }
 
     pub fn liquidate_pool(pool_id: u16)
     {
+        pallet_swap::liquidate_pool(pool_id);
     }
 }
