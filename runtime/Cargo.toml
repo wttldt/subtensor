@@ -45,6 +45,7 @@ sp-genesis-builder = { default-features = false, git = "https://github.com/parit
 pallet-subtensor = { version = "4.0.0-dev", default-features = false, path = "../pallets/subtensor" }
 pallet-registry = { version = "4.0.0-dev", default-features = false, path = "../pallets/registry" }
 pallet-admin-utils = { version = "4.0.0-dev", default-features = false, path = "../pallets/admin-utils" }
+pallet-swap = { version = "4.0.0-dev", default-features = false, path = "../pallets/swap" }
 pallet-aura = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
 pallet-balances = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
 pallet-grandpa = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
@@ -92,6 +93,7 @@ std = [
 	"pallet-subtensor/std",
 	"pallet-admin-utils/std",
 	"pallet-assets/std",
+	"pallet-swap/std",
 	"scale-info/std",
 	"serde_json/std",
 	"pallet-sudo/std",
@@ -127,7 +129,8 @@ runtime-benchmarks = [
 	"pallet-registry/runtime-benchmarks",
 	"pallet-commitments/runtime-benchmarks",
 	"pallet-admin-utils/runtime-benchmarks",
-	"pallet-assets/runtime-benchmarks"
+	"pallet-assets/runtime-benchmarks",
+	"pallet-swap/runtime-benchmarks"
 ]
 
 try-runtime = [

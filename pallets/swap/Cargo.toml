@@ -37,7 +37,6 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"scale-info/std",
-	"pallet-subtensor/std",
 	"sp-consensus-aura/std",
 ]
 
