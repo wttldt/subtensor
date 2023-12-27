@@ -107,7 +107,10 @@ impl<T: Config> Pallet<T>
             log::info!("Creating token {:?} for netuid {:?}", token_name, netuid_to_register);
 
             ensure!(
-                Self::create_new_pool(Token::SubnetToken(netuid_to_register, 0), Token::TAO(0)),
+                Self::create_new_pool(
+                    pallet_swap::Token::SubnetToken(netuid_to_register, 1), 
+                    pallet_swap::Token::TAO(lock_amount)
+                ),
                 Error::<T>::FailureCreatingSubnetToken
             );
         }
