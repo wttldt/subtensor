@@ -64,8 +64,11 @@ pub mod pallet {
 	#[pallet::error]
 	pub enum Error<T>
 	{
+		/// This token pair already exists
 		PoolAlreadyExists,
+		/// Specified pool doesn't exist
 		InvalidPool,
+		/// Not enough balance to complete operation
 		NotEnoughBalance
 	}
 
