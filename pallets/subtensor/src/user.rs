@@ -108,8 +108,8 @@ impl<T: Config> Pallet<T>
 
             ensure!(
                 Self::create_new_pool(
-                    pallet_swap::Token::SubnetToken(netuid_to_register, 1), 
-                    pallet_swap::Token::TAO(lock_amount)
+                    Token::SubnetToken(netuid_to_register, 1), 
+                    Token::TAO(lock_amount)
                 ),
                 Error::<T>::FailureCreatingSubnetToken
             );

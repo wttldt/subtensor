@@ -1,0 +1,87 @@
+[1mdiff --git a/pallets/swap/src/lib.rs b/pallets/swap/src/lib.rs[m
+[1mindex 354703c..8769027 100644[m
+[1m--- a/pallets/swap/src/lib.rs[m
+[1m+++ b/pallets/swap/src/lib.rs[m
+[36m@@ -1,6 +1,5 @@[m
+ #![cfg_attr(not(feature = "std"), no_std)][m
+ [m
+[31m-pub use pallet::*;[m
+ pub mod weights;[m
+ pub use weights::WeightInfo;[m
+ [m
+[36m@@ -14,16 +13,18 @@[m [muse frame_support::pallet_prelude::DispatchError;[m
+ #[cfg(feature = "runtime-benchmarks")][m
+ mod benchmarking;[m
+ [m
+[31m-pub enum Token {[m
+[31m-	TAO(u64)[m
+[32m+[m[32mpub enum Token[m[41m [m
+[32m+[m[32m{[m
+[32m+[m	[32mTAO(u64),[m
+ 	SubnetToken(u16, u64)[m
+ }[m
+ [m
+[31m-pub struct Pool {[m
+[31m-	reserve0: Token,[m
+[31m-	reserve1: Token,[m
+[31m-	outstanding: Token,[m
+[31m-	ratio: u64[m
+[32m+[m[32mpub struct Pool[m[41m [m
+[32m+[m[32m{[m
+[32m+[m	[32mreserve0: 		Token,[m
+[32m+[m	[32mreserve1: 		Token,[m
+[32m+[m	[32moutstanding:	Token,[m
+[32m+[m	[32mratio: 			u64[m
+ }[m
+ [m
+ #[frame_support::pallet][m
+[36m@@ -93,32 +94,38 @@[m [mpub mod pallet {[m
+ 		/// Contribute tokens to the pool without swapping[m
+ 		#[pallet::call_index(1)][m
+ 		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))][m
+[31m-		pub fn add_token(origin: OriginFor<T>, token: Token) {[m
+[31m-[m
+[32m+[m		[32mpub fn add_token(origin: OriginFor<T>, token: Token) -> DispatchResult[m
+[32m+[m		[32m{[m
+[32m+[m			[32mOk(())[m
+ 		}[m
+ [m
+ 		/// Contribute TAO to a pool without swapping[m
+ 		#[pallet::call_index(2)][m
+ 		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))][m
+[31m-		pub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) {[m
+[31m-[m
+[32m+[m		[32mpub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) -> DispatchResult[m
+[32m+[m		[32m{[m
+[32m+[m			[32mOk(())[m
+ 		}[m
+ [m
+ 		/// Price of in_token per out_token [m
+[31m-		pub fn price(from: Token, to: Token) -> u64 {[m
+[31m-			0[m
+[32m+[m		[32mpub fn price(from: Token, to: Token) -> u64[m[41m [m
+[32m+[m		[32m{[m
+[32m+[m			[32mreturn 0;[m
+ 		}[m
+ [m
+ 		/// Market cap of in_token as a function of out_token[m
+[31m-		pub fn marketcap(from: Token, to: Token) -> u64 {[m
+[31m-			0[m
+[32m+[m		[32mpub fn marketcap(from: Token, to: Token) -> u64[m[41m [m
+[32m+[m		[32m{[m
+[32m+[m			[32mreturn 0;[m
+ 		}[m
+ [m
+[31m-		pub fn new_pool(from: Token, to: Token) -> Result<u16, Error> {[m
+[31m-			0 // pool id[m
+[32m+[m		[32mpub fn new_pool(from: Token, to: Token) -> Result<u16, Error>[m[41m [m
+[32m+[m		[32m{[m
+[32m+[m			[32mreturn 0; // pool id[m
+ 		}[m
+ [m
+[31m-		pub fn liquidate_pool(pool_id: u16) {[m
+[32m+[m		[32mpub fn liquidate_pool(pool_id: u16)[m[41m [m
+[32m+[m		[32m{[m
+ [m
+ 		}[m
+     }[m

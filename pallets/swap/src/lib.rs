@@ -15,15 +15,16 @@ use frame_support::pallet_prelude::DispatchError;
 mod benchmarking;
 
 pub enum Token {
-	TAO(u64)
+	TAO(u64),
 	SubnetToken(u16, u64)
 }
 
-pub struct Pool {
-	reserve0: Token,
-	reserve1: Token,
-	outstanding: Token,
-	ratio: u64
+pub struct Pool 
+{
+	reserve0: 		Token,
+	reserve1: 		Token,
+	outstanding: 	Token,
+	ratio: 			u64
 }
 
 #[frame_support::pallet]
