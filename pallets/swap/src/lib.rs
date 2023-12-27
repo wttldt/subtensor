@@ -17,7 +17,7 @@ pub enum Token {
 }
 
 #[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug, TypeInfo)]
-pub struct Pool 
+pub struct Pool
 {
 	reserve0: 		Token,
 	reserve1: 		Token,
@@ -57,12 +57,12 @@ pub mod pallet {
 
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
-	pub enum Event<T: Config> 
+	pub enum Event<T: Config>
 	{}
 
 	// Errors inform users that something went wrong.
 	#[pallet::error]
-	pub enum Error<T> 
+	pub enum Error<T>
 	{
 		PoolAlreadyExists,
 		InvalidPool,
@@ -77,7 +77,7 @@ pub mod pallet {
 		#[pallet::call_index(0)]
 		#[pallet::weight(0)]
 		pub fn swap(origin: OriginFor<T>, from: Token, to: Token) -> DispatchResult {
-			
+
 			// Return a successful DispatchResultWithPostInfo
 			Ok(())
 		}
@@ -96,24 +96,24 @@ pub mod pallet {
 			Ok(())
 		}
     }
-}
 
-impl<T: Config> Pallet<T> {
-	/// Price of in_token per out_token 
-	pub fn price(from: Token, to: Token) -> u64 {
-		0
-	}
+	impl<T: Config> Pallet<T> {
+		/// Price of in_token per out_token
+		pub fn price(from: Token, to: Token) -> u64 {
+			0
+		}
 
-	/// Market cap of in_token as a function of out_token
-	pub fn marketcap(from: Token, to: Token) -> u64 {
-		0
-	}
+		/// Market cap of in_token as a function of out_token
+		pub fn marketcap(from: Token, to: Token) -> u64 {
+			0
+		}
 
-	pub fn new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
-		Ok(0) // pool id
-	}
+		pub fn new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
+			Ok(0) // pool id
+		}
 
-	pub fn liquidate_pool(pool_id: u16) {
+		pub fn liquidate_pool(pool_id: u16) {
 
+		}
 	}
 }
