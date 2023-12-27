@@ -623,20 +623,10 @@ impl<T: Config> Pallet<T>
     //
     pub fn remove_network(netuid: u16) 
     {
-        // --- 1. Return balance to subnet owner.
-        let owner_coldkey: T::AccountId;
-        let reserved_amount_as_bal;
-        {
-            owner_coldkey = SubnetOwner::<T>::get(netuid);
-            let reserved_amount = Self::get_subnet_locked_balance(netuid);
+        let owner_coldkey: T::AccountId = SubnetOwner::<T>::get(netuid);
 
-            // Ensure that we can convert this u64 to a balance.
-            reserved_amount_as_bal = Self::u64_to_balance(reserved_amount);
-            if !reserved_amount_as_bal.is_some() 
-            {
-                return;
-            }
-        }
+        // --- 1. Token liquidation & deletion [!!WAS: Return balance to subnet owner.]
+        Self::liquidate_pool(netuid);
 
         // --- 2. Remove network count.
         {
@@ -702,11 +692,8 @@ impl<T: Config> Pallet<T>
             BurnRegistrationsThisInterval::<T>::remove(netuid);
         }
 
-        // --- 11. Add the balance back to the owner.
+        // --- 11. Delete subnet owner
         {
-            Self::add_balance_to_coldkey_account(&owner_coldkey, reserved_amount_as_bal.unwrap());
-            Self::set_subnet_locked_balance(netuid, 0);
-
             SubnetOwner::<T>::remove(netuid);
         }
     }
@@ -783,5 +770,13 @@ impl<T: Config> Pallet<T>
         }
         
         return bonds;
+    }
+
+    pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error>
+    {
+    }
+
+    pub fn liquidate_pool(pool_id: u16)
+    {
     }
 }

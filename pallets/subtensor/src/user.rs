@@ -84,15 +84,32 @@ impl<T: Config> Pallet<T>
             }
         };
 
-        // --- 5. Perform the lock operation.
+        // --- 5. Token creation [!!WAS: Perform the lock operation.]
         {
-            ensure!(
-                Self::remove_balance_from_coldkey_account(&coldkey, lock_as_balance.unwrap()) == true,
-                Error::<T>::BalanceWithdrawalError
-            );
+            let token_name: String;
+            if netuid_to_register <= 24 // α - ω
+            {
+                token_name = String::from(
+                    char::from_u32(('α' as u32) + (netuid_to_register as u32) - 1).unwrap()
+                );
+            }
+            else if netuid_to_register <= 64 // ა - ჿ
+            {
+                token_name = String::from(
+                    char::from_u32(('ა' as u32) + ((netuid_to_register as u32) - 24) - 1).unwrap()
+                );
+            }
+            else
+            {
+                token_name = String::new();
+            }
 
-            Self::set_subnet_locked_balance(netuid_to_register, lock_amount);
-            Self::set_network_last_lock(lock_amount);
+            log::info!("Creating token {:?} for netuid {:?}", token_name, netuid_to_register);
+
+            ensure!(
+                Self::create_new_pool(Token::SubnetToken(netuid_to_register, 0), Token::TAO(0)),
+                Error::<T>::FailureCreatingSubnetToken
+            );
         }
 
         // --- 6. Set initial and custom parameters for the network.
