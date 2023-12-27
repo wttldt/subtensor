@@ -4,14 +4,19 @@ pub use pallet::*;
 pub mod weights;
 pub use weights::WeightInfo;
 
+use sp_runtime::RuntimeDebug;
+use frame_support::pallet_prelude::{Encode, Decode, TypeInfo, MaxEncodedLen};
+
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
+#[derive(PartialEq, Eq, Clone, RuntimeDebug, Encode, Decode, TypeInfo, MaxEncodedLen)]
 pub enum Token {
 	TAO(u64),
 	SubnetToken(u16, u64)
 }
 
+#[derive(PartialEq, Eq, Clone, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub struct Pool 
 {
 	reserve0: 		Token,
