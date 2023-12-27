@@ -93,7 +93,7 @@ impl<T: Config> Pallet<T>
                     char::from_u32(('α' as u32) + (netuid_to_register as u32) - 1).unwrap()
                 );
             }
-            else if netuid_to_register <= 64 // ა - ჿ
+            else if netuid_to_register <= 64 // ა - ჿ (Georgian)
             {
                 token_name = String::from(
                     char::from_u32(('ა' as u32) + ((netuid_to_register as u32) - 24) - 1).unwrap()
