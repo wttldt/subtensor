@@ -93,14 +93,14 @@ pub mod pallet {
 		/// Contribute tokens to the pool without swapping
 		#[pallet::call_index(1)]
 		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))]
-		pub fn add_token(token: Token) {
+		pub fn add_token(origin: OriginFor<T>, token: Token) {
 
 		}
 
 		/// Contribute TAO to a pool without swapping
 		#[pallet::call_index(2)]
 		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))]
-		pub fn add_tao(token: Token, tao_amount: u64) {
+		pub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) {
 
 		}
 
