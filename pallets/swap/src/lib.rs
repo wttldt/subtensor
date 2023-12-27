@@ -4,13 +4,6 @@ pub use pallet::*;
 pub mod weights;
 pub use weights::WeightInfo;
 
-use sp_runtime::{
-	traits::Member,
-	RuntimeAppPublic
-};
-
-use frame_support::pallet_prelude::DispatchError;
-
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
@@ -32,7 +25,6 @@ pub mod pallet {
 	use super::*;
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
-	use sp_runtime::BoundedVec;
 	use frame_support::traits::tokens::Balance;
 	use frame_support::dispatch::DispatchResult;
 
@@ -50,12 +42,6 @@ pub mod pallet {
 		type WeightInfo: WeightInfo;
 
 		type Balance: Balance;
-		type Subtensor: crate::SubtensorInterface
-		<
-			Self::AccountId, 
-			Self::Balance, 
-			Self::RuntimeOrigin
-		>;
 
 		type MaxPools: Get<u16>;
 	}
@@ -84,7 +70,7 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::call_index(0)]
-		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))]
+		#[pallet::weight(0)]
 		pub fn swap(origin: OriginFor<T>, from: Token, to: Token) -> DispatchResult {
 			
 			// Return a successful DispatchResultWithPostInfo
@@ -93,34 +79,36 @@ pub mod pallet {
 
 		/// Contribute tokens to the pool without swapping
 		#[pallet::call_index(1)]
-		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))]
-		pub fn add_token(origin: OriginFor<T>, token: Token) {
-
+		#[pallet::weight(0)]
+		pub fn add_token(origin: OriginFor<T>, token: Token) -> DispatchResult {
+			Ok(())
 		}
 
 		/// Contribute TAO to a pool without swapping
 		#[pallet::call_index(2)]
-		#[pallet::weight(T::WeightInfo::swap_authorities(new_authorities.len() as u32))]
-		pub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) {
-
-		}
-
-		/// Price of in_token per out_token 
-		pub fn price(from: Token, to: Token) -> u64 {
-			0
-		}
-
-		/// Market cap of in_token as a function of out_token
-		pub fn marketcap(from: Token, to: Token) -> u64 {
-			0
-		}
-
-		pub fn new_pool(from: Token, to: Token) -> Result<u16, Error> {
-			0 // pool id
-		}
-
-		pub fn liquidate_pool(pool_id: u16) {
-
+		#[pallet::weight(0)]
+		pub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) -> DispatchResult {
+			Ok(())
 		}
     }
+}
+
+impl<T: Config> Pallet<T> {
+	/// Price of in_token per out_token 
+	pub fn price(from: Token, to: Token) -> u64 {
+		0
+	}
+
+	/// Market cap of in_token as a function of out_token
+	pub fn marketcap(from: Token, to: Token) -> u64 {
+		0
+	}
+
+	pub fn new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
+		Ok(0) // pool id
+	}
+
+	pub fn liquidate_pool(pool_id: u16) {
+
+	}
 }
