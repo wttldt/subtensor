@@ -483,12 +483,16 @@ impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Ba
     }
 }
 
+use pallet_swap::Token as SwapTokenType;
+
 struct SwapIntrf;
-impl pallet_subtensor::SwapInterface<pallet_swap::Token, Result<u16, pallet_swap::Error<Runtime>>> for SwapIntrf
+impl pallet_subtensor::SwapInterface<SwapTokenType> for SwapIntrf
 {
-    fn create_new_pool(from: pallet_swap::Token, to: pallet_swap::Token) -> Result<u16, pallet_swap::Error<Runtime>>
+    fn create_new_pool(from: SwapTokenType, to: SwapTokenType) -> DispatchResult
     {
-        return Swap::create_new_pool(from, to);
+        Swap::create_new_pool(from, to);
+
+        Ok(())
     }
 }
 

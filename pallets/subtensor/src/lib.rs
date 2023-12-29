@@ -2056,5 +2056,5 @@ where
 
 pub trait SwapInterface<Token, Result_>
 {
-    fn create_new_pool(from: Token, to: Token) -> Result_;
+    fn create_new_pool(from: Token, to: Token) -> DispatchResult;
 }

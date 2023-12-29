@@ -121,7 +121,7 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::call_index(0)]
-		#[pallet::weight(0)]
+		#[pallet::weight({0})]
 		pub fn swap(origin: OriginFor<T>, from: Token, to: Token) -> DispatchResult {
 
 			// Return a successful DispatchResultWithPostInfo
@@ -130,14 +130,14 @@ pub mod pallet {
 
 		/// Contribute tokens to the pool without swapping
 		#[pallet::call_index(1)]
-		#[pallet::weight(0)]
+		#[pallet::weight({0})]
 		pub fn add_token(origin: OriginFor<T>, token: Token) -> DispatchResult {
 			Ok(())
 		}
 
 		/// Contribute TAO to a pool without swapping
 		#[pallet::call_index(2)]
-		#[pallet::weight(0)]
+		#[pallet::weight({0})]
 		pub fn add_tao(origin: OriginFor<T>, token: Token, tao_amount: u64) -> DispatchResult {
 			Ok(())
 		}
