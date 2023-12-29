@@ -2053,3 +2053,9 @@ where
         Ok(())
     }
 }
+
+
+pub trait SwapInterface<Token>
+{
+    fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: Token, to: Token) -> DispatchResult;
+}

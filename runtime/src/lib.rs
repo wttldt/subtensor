@@ -448,9 +448,8 @@ use frame_support::dispatch::DispatchErrorWithPostInfo;
 use frame_support::dispatch::PostDispatchInfo;
 use frame_support::dispatch::DispatchResultWithPostInfo;
 type AssetIdParameter = u32;
-
 pub struct AssetsPalletIntrf;
-impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Balance> for AssetsPalletIntrf where
+impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Balance> for AssetsPalletIntrf
 {
     fn force_create(origin: RuntimeOrigin, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult
     {
@@ -484,12 +483,21 @@ impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Ba
     }
 }
 
+struct SwapIntrf;
+impl pallet_subtensor::SwapInterface<pallet_swap::Token> for SwapIntrf
+{
+    fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: pallet_swap::Token, to: pallet_swap::Token) -> Result<u16, Error<T>>
+    {
+        return Swap::create_new_pool(token_symbol, token_name, from, to);
+    }
+}
+
 const TAO: u64 = 1_000_000_000;
 
 parameter_types! {
 	pub const AssetDeposit: Balance = 100 * TAO;
 	pub const ApprovalDeposit: Balance = 1 * TAO;
-	pub const StringLimit: u32 = 50;
+	pub const StringAuraLimit: u32 = 50;
 	pub const MetadataDepositBase: Balance = TAO / 100;
 	pub const MetadataDepositPerByte: Balance = TAO / 1000;
 }
@@ -517,6 +525,14 @@ impl pallet_assets::Config for Runtime {
 	type BenchmarkHelper = ();
 }
 
+impl pallet_swap::Config for Runtime
+{
+    type RuntimeEvent = RuntimeEvent;
+    type WeightInfo = pallet_swap::weights::SubstrateWeight<Runtime>;
+    type Balance = u64;
+    type MaxPools = ConstU16<128>;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
     pub struct Runtime
@@ -531,12 +547,12 @@ construct_runtime!(
         Sudo: pallet_sudo,
         Commitments: pallet_commitments,
         AdminUtils: pallet_admin_utils,
-        Assets: pallet_assets
+        Assets: pallet_assets,
+        Swap: pallet_swap
     }
 );
 
 pub struct SubtensorInterface;
-
 impl pallet_admin_utils::SubtensorInterface<AccountId, <pallet_balances::Pallet<Runtime> as frame_support::traits::Currency<AccountId>>::Balance, RuntimeOrigin> for SubtensorInterface
 {
     fn set_default_take(default_take: u16)
@@ -878,6 +894,7 @@ mod benches {
         [pallet_commitments, Commitments]
         [pallet_admin_utils, AdminUtils]
         [pallet_assets, Assets]
+        [pallet_swap, Swap]
     );
 }
 
