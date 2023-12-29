@@ -106,8 +106,8 @@ impl<T: Config> Pallet<T>
                 Self::create_new_pool(
                     token_symbol.to_string().as_bytes().to_vec(),
                     token_name.as_bytes().to_vec(),
-                    Token::SubnetToken(netuid_to_register, 1), 
-                    Token::TAO(lock_amount)
+                    Token::TAO(lock_amount),
+                    Token::SubnetToken(netuid_to_register, 1)
                 ).is_ok(),
                 Error::<T>::FailureCreatingSubnetToken
             );
