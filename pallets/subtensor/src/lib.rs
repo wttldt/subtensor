@@ -2054,7 +2054,7 @@ where
     }
 }
 
-pub trait SwapInterface<Token, Result_>
+pub trait SwapInterface<Token>
 {
     fn create_new_pool(from: Token, to: Token) -> DispatchResult;
 }
