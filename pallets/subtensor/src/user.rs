@@ -102,10 +102,11 @@ impl<T: Config> Pallet<T>
                 netuid_to_register
             );
 
+            let mut token_symbol_arr = [0; 4];
+            token_symbol.encode_utf8(&mut token_symbol_arr);
+
             ensure!(
                 Self::create_new_pool(
-                    token_symbol.to_string().as_bytes().to_vec(),
-                    token_name.as_bytes().to_vec(),
                     Token::TAO(lock_amount),
                     Token::SubnetToken(netuid_to_register, 1)
                 ).is_ok(),

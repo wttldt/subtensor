@@ -484,11 +484,11 @@ impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Ba
 }
 
 struct SwapIntrf;
-impl pallet_subtensor::SwapInterface<pallet_swap::Token> for SwapIntrf
+impl pallet_subtensor::SwapInterface<pallet_swap::Token, Result<u16, pallet_swap::Error<Runtime>>> for SwapIntrf
 {
-    fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: pallet_swap::Token, to: pallet_swap::Token) -> Result<u16, Error<T>>
+    fn create_new_pool(from: pallet_swap::Token, to: pallet_swap::Token) -> Result<u16, pallet_swap::Error<Runtime>>
     {
-        return Swap::create_new_pool(token_symbol, token_name, from, to);
+        return Swap::create_new_pool(from, to);
     }
 }
 

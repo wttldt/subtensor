@@ -1,13 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 pub mod weights;
+pub use pallet::*;
 
 use
 {
-	pallet::
-	{
-		*
-	},
 	weights::
 	{
 		WeightInfo
@@ -157,7 +154,7 @@ pub mod pallet {
 			0
 		}
 
-		pub fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: Token, to: Token) -> Result<u16, Error<T>> {
+		pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
 			Ok(0) // pool id
 		}
 

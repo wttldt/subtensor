@@ -779,7 +779,7 @@ impl<T: Config> Pallet<T>
         return bonds;
     }
 
-    pub fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: Token, to: Token) -> Result<u16, Error<T>>
+    pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>>
     {
         Ok(1)
         //return pallet_swap::create_new_pool(from, to);
