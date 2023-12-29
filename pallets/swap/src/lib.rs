@@ -46,7 +46,8 @@ use
 mod benchmarking;
 
 #[derive(PartialEq, Eq, Clone, RuntimeDebug, Encode, Decode, TypeInfo, MaxEncodedLen)]
-pub enum Token {
+pub enum Token 
+{
 	TAO(u64),
 	SubnetToken(u16, u64)
 }
@@ -156,7 +157,7 @@ pub mod pallet {
 			0
 		}
 
-		pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>> {
+		pub fn create_new_pool(token_symbol: Vec<u8>, token_name: Vec<u8>, from: Token, to: Token) -> Result<u16, Error<T>> {
 			Ok(0) // pool id
 		}
 
