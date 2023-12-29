@@ -54,7 +54,6 @@ pub struct Pool
 {
 	reserve0: 		Token,
 	reserve1: 		Token,
-	outstanding: 	Token,
 	ratio: 			u64
 }
 
