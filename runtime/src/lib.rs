@@ -37,7 +37,7 @@ use frame_support::genesis_builder_helper::{build_config, create_default_config}
 pub use frame_support::{
 	construct_runtime, derive_impl, parameter_types,
 	traits::{
-		ConstBool, ConstU128, ConstU32, ConstU64, ConstU8, KeyOwnerProofSystem, Randomness,
+		ConstBool, ConstU128, ConstU32, ConstU64, ConstU8, ConstU16, KeyOwnerProofSystem, Randomness,
 		StorageInfo,
 	},
 	weights::{
@@ -497,7 +497,7 @@ const TAO: u64 = 1_000_000_000;
 parameter_types! {
 	pub const AssetDeposit: Balance = 100 * TAO;
 	pub const ApprovalDeposit: Balance = 1 * TAO;
-	pub const StringAuraLimit: u32 = 50;
+	pub const StringLimit: u32 = 50;
 	pub const MetadataDepositBase: Balance = TAO / 100;
 	pub const MetadataDepositPerByte: Balance = TAO / 1000;
 }
@@ -530,7 +530,7 @@ impl pallet_swap::Config for Runtime
     type RuntimeEvent = RuntimeEvent;
     type WeightInfo = pallet_swap::weights::SubstrateWeight<Runtime>;
     type Balance = u64;
-    type MaxPools = ConstU16<128>;
+    type MaxPools = ConstU16<32>;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
