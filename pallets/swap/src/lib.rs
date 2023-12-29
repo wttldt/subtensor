@@ -15,10 +15,14 @@ use
 	sp_runtime::
 	{
 		RuntimeDebug,
-		DispatchResult
 	},
 	frame_support::
 	{
+		dispatch::
+		{
+			DispatchResult,
+			DispatchResultWithPostInfo
+		},
 		pallet_prelude::
 		{
 			Encode, 
@@ -61,8 +65,8 @@ pub trait AssetsInterface<Origin, AssetIdParameter, AccountId, Balance>
     fn force_create(origin: Origin, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult;
     fn force_set_metadata(origin: Origin, id: AssetIdParameter, name: Vec<u8>, symbol: Vec<u8>, decimals: u8, is_frozen: bool) -> DispatchResult;
     fn start_destroy(origin: Origin, id: AssetIdParameter) -> DispatchResult;
-    fn destroy_accounts(origin: Origin, id: AssetIdParameter) -> DispatchResult;
-    fn destroy_approvals(origin: Origin, id: AssetIdParameter) -> DispatchResult;
+    fn destroy_accounts(origin: Origin, id: AssetIdParameter) -> DispatchResultWithPostInfo;
+    fn destroy_approvals(origin: Origin, id: AssetIdParameter) -> DispatchResultWithPostInfo;
     fn finish_destroy(origin: Origin, id: AssetIdParameter) -> DispatchResult;
 }
 
@@ -90,14 +94,6 @@ pub mod pallet {
 		type Balance: Balance;
 
 		type MaxPools: Get<u16>;
-
-        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen;
-
-        type AssetIdParameter: Parameter
-			+ Copy
-			+ From<Self::AssetId>
-			+ Into<Self::AssetId>
-			+ MaxEncodedLen;
 	}
 
 	/// Storage map for existing pools
