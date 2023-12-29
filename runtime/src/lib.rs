@@ -443,6 +443,42 @@ impl pallet_admin_utils::AuraInterface<AuraId, ConstU32<32>> for AuraPalletIntrf
     }
 }
 
+use frame_system::pallet_prelude::OriginFor;
+
+pub struct AssetsPalletIntrf;
+impl<T: frame_system::Config> pallet_swap::AssetsInterface<OriginFor<T>, AssetIdParameter, AccountId, Balance> for AssertsPalletIntrf
+{
+    fn force_create(origin: OriginFor<T>, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult
+    {
+        return Assets::force_create(origin, id, owner, is_sufficient, min_balance);
+    }
+
+    fn force_set_metadata(origin: OriginFor<T>, id: AssetIdParameter, name: Vec<u8>, symbol: Vec<u8>, decimals: u8, is_frozen: bool) -> DispatchResult
+    {
+        return Assets::force_set_metadata(origin, id, name, symbol, decimals, is_frozen);
+    }
+
+    fn start_destroy(origin: OriginFor<T>, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::start_destroy(origin, id);
+    }
+
+    fn destroy_accounts(origin: OriginFor<T>, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::destroy_accounts(origin, id);
+    }
+
+    fn destroy_approvals(origin: OriginFor<T>, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::destroy_approvals(origin, id);
+    }
+
+    fn finish_destroy(origin: OriginFor<T>, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::finish_destroy(origin, id);
+    }
+}
+
 const TAO: u64 = 1_000_000_000;
 
 parameter_types! {

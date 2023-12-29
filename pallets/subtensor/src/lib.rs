@@ -69,7 +69,9 @@ use
             DispatchInfoOf,
             Dispatchable,
             PostDispatchInfoOf,
-            SignedExtension
+            SignedExtension,
+            Lookup,
+            StaticLookup
         },
         transaction_validity::
         {
@@ -2050,21 +2052,4 @@ where
         }
         Ok(())
     }
-}
-
-pub trait AssetsInterface<Origin, AssetId, AccountId, Balance> {
-    fn force_create(origin: Origin, id: AssetId, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult;
-    fn force_set_metadata() -> DispatchResult;
-    fn start_destroy() -> DispatchResult;
-    fn destroy_accounts() -> DispatchResult;
-    fn destroy_approvals() -> DispatchResult;
-    fn finish_destroy() -> DispatchResult;
-
-    fn mint() -> DispatchResult;
-    fn burn() -> DispatchResult;
-
-}
-
-impl<A, M> AssetsInterface<A, M> for () {
-	fn change_authorities(_: BoundedVec<A, M>) {}
 }

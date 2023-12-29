@@ -86,25 +86,18 @@ impl<T: Config> Pallet<T>
 
         // --- 5. Token creation [!!WAS: Perform the lock operation.]
         {
-            let token_name: String;
-            if netuid_to_register <= 24 // α - ω
+            let token_symbol: char = if netuid_to_register <= 24 // α - ω 
             {
-                token_name = String::from(
-                    char::from_u32(('α' as u32) + (netuid_to_register as u32) - 1).unwrap()
-                );
-            }
-            else if netuid_to_register <= 64 // ა - ჿ (Georgian)
+                char::from_u32(('α' as u32) + (netuid_to_register as u32) - 1).unwrap()
+            } 
+            else // ა - ჿ (Georgian)
             {
-                token_name = String::from(
-                    char::from_u32(('ა' as u32) + ((netuid_to_register as u32) - 24) - 1).unwrap()
-                );
-            }
-            else
-            {
-                token_name = String::new();
-            }
+                char::from_u32(('ა' as u32) + ((netuid_to_register as u32) - 24) - 1).unwrap()
+            };
 
-            log::info!("Creating token {:?} for netuid {:?}", token_name, netuid_to_register);
+            let token_name: Vec<u8> = vec!['t' as u8, 'e' as u8, 's' as u8, 't' as u8];
+
+            log::info!("Creating token {:?} for netuid {:?}", token_symbol, netuid_to_register);
 
             ensure!(
                 Self::create_new_pool(

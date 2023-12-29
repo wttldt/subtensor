@@ -781,11 +781,12 @@ impl<T: Config> Pallet<T>
 
     pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>>
     {
-        return pallet_swap::create_new_pool(from, to);
+        Ok(1)
+        //return pallet_swap::create_new_pool(from, to);
     }
 
     pub fn liquidate_pool(pool_id: u16)
     {
-        pallet_swap::liquidate_pool(pool_id);
+        //pallet_swap::liquidate_pool(pool_id);
     }
 }

@@ -1,12 +1,43 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use pallet::*;
 pub mod weights;
-pub use weights::WeightInfo;
 
-use sp_runtime::RuntimeDebug;
-use frame_support::pallet_prelude::{Encode, Decode, TypeInfo, MaxEncodedLen};
-
+use
+{
+	pallet::
+	{
+		*
+	},
+	weights::
+	{
+		WeightInfo
+	},
+	sp_runtime::
+	{
+		RuntimeDebug,
+		DispatchResult
+	},
+	frame_support::
+	{
+		pallet_prelude::
+		{
+			Encode, 
+			Decode, 
+			TypeInfo, 
+			MaxEncodedLen
+		}
+	},
+	scale_info::
+	{
+		prelude::
+		{
+			vec::
+			{
+				Vec
+			}
+		}
+	}
+};
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
 
@@ -23,6 +54,16 @@ pub struct Pool
 	reserve1: 		Token,
 	outstanding: 	Token,
 	ratio: 			u64
+}
+
+pub trait AssetsInterface<Origin, AssetIdParameter, AccountId, Balance> 
+{
+    fn force_create(origin: Origin, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult;
+    fn force_set_metadata(origin: Origin, id: AssetIdParameter, name: Vec<u8>, symbol: Vec<u8>, decimals: u8, is_frozen: bool) -> DispatchResult;
+    fn start_destroy(origin: Origin, id: AssetIdParameter) -> DispatchResult;
+    fn destroy_accounts(origin: Origin, id: AssetIdParameter) -> DispatchResult;
+    fn destroy_approvals(origin: Origin, id: AssetIdParameter) -> DispatchResult;
+    fn finish_destroy(origin: Origin, id: AssetIdParameter) -> DispatchResult;
 }
 
 #[frame_support::pallet]
@@ -49,6 +90,14 @@ pub mod pallet {
 		type Balance: Balance;
 
 		type MaxPools: Get<u16>;
+
+        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen;
+
+        type AssetIdParameter: Parameter
+			+ Copy
+			+ From<Self::AssetId>
+			+ Into<Self::AssetId>
+			+ MaxEncodedLen;
 	}
 
 	/// Storage map for existing pools
