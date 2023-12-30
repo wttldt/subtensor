@@ -1330,3 +1330,72 @@ impl_runtime_apis! {
         }
     }
 }
+
+type AssetId        = <Runtime as pallet_asset_conversion::Config>::MultiAssetId;
+type AssetBalance   = <Runtime as pallet_asset_conversion::Config>::AssetBalance;
+
+struct AssetConversionInterf;
+impl pallet_subtensor::AssetConversionInterface<
+    RuntimeOrigin, 
+    AssetId, 
+    AssetBalance,
+    AccountId,
+    ConstU32<4>
+> for AssetConversionInterf
+{
+    fn add_liquidity(
+        origin:             RuntimeOrigin,
+        asset1:             AssetId, 
+        asset2:             AssetId, 
+        amount1_desired:    AssetBalance, 
+        amount2_desired:    AssetBalance, 
+        amount1_min:        AssetBalance,
+        amount2_min:        AssetBalance,
+        mint_to:            AccountId
+    ) -> DispatchResult
+    {
+        return Swap::add_liquidity(origin, asset1, asset2, amount1_desired, amount2_desired, amount1_min, amount2_min, mint_to);
+    }
+
+    fn create_pool(origin: RuntimeOrigin, asset1: AssetId, asset2: AssetId) -> DispatchResult
+    {
+        return Swap::create_pool(origin, asset1, asset2);
+    }
+
+    fn remove_liquidity(
+        origin:                 RuntimeOrigin,
+        asset1:                 AssetId, 
+        asset2:                 AssetId,
+        lp_token_burn:          AssetBalance,
+        amount1_min_receive:    AssetBalance,
+        amount2_min_receive:    AssetBalance,
+        withdraw_to:            AccountId
+    ) -> DispatchResult
+    {
+        return Swap::remove_liquidity(origin, asset1, asset2, lp_token_burn, amount1_min_receive, amount2_min_receive, withdraw_to);
+    }
+
+    fn swap_exact_tokens_for_tokens(
+        origin:                 RuntimeOrigin,
+        path:                   BoundedVec<AssetId, ConstU32<4>>,
+        amount_in:              AssetBalance,
+        amount_out_min:         AssetBalance,
+        send_to:                AccountId,
+        keep_alive:             bool 
+    ) -> DispatchResult
+    {
+        return Swap::swap_exact_tokens_for_tokens(origin, path, amount_in, amount_out_min, send_to, keep_alive);
+    }
+
+    fn swap_tokens_for_exact_tokens(
+        origin:                 RuntimeOrigin,
+        path:                   BoundedVec<AssetId, ConstU32<4>>,
+        amount_out:             AssetBalance,
+        amount_in_max:          AssetBalance,
+        send_to:                AccountId,
+        keep_alive:             bool 
+    ) -> DispatchResult
+    {
+        return Swap::swap_tokens_for_exact_tokens(origin, path, amount_out, amount_in_max, send_to, keep_alive);
+    }
+}
