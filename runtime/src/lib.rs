@@ -398,7 +398,7 @@ impl pallet_subtensor::utils::AssetsInterface<RuntimeOrigin, AssetIdParameter, A
 }
 
 type AssetId        = <Runtime as pallet_subtensor::Config>::AssetId;
-type AssetBalance   = <<Self as Config>::Currency as Currency<<Self as frame_system::Config>::AccountId>>::Balance;
+type AssetBalance   = <Runtime as pallet_balances::Config>::Balance;
 
 impl pallet_subtensor::utils::AssetConversionInterface<
     RuntimeOrigin, 
@@ -406,7 +406,7 @@ impl pallet_subtensor::utils::AssetConversionInterface<
     AssetBalance,
     AccountId,
     ConstU32<4>
-> for AssetConversionInterf
+> for AssetConversionIntrf
 {
     fn add_liquidity(
         origin:             RuntimeOrigin,
@@ -419,12 +419,12 @@ impl pallet_subtensor::utils::AssetConversionInterface<
         mint_to:            AccountId
     ) -> DispatchResult
     {
-        return Swap::add_liquidity(origin, asset1, asset2, amount1_desired, amount2_desired, amount1_min, amount2_min, mint_to);
+        return Swap::add_liquidity(origin, asset1.into(), asset2.into(), amount1_desired, amount2_desired, amount1_min, amount2_min, mint_to);
     }
 
     fn create_pool(origin: RuntimeOrigin, asset1: AssetId, asset2: AssetId) -> DispatchResult
     {
-        return Swap::create_pool(origin, asset1, asset2);
+        return Swap::create_pool(origin, asset1.into(), asset2.into());
     }
 
     fn remove_liquidity(
@@ -437,7 +437,7 @@ impl pallet_subtensor::utils::AssetConversionInterface<
         withdraw_to:            AccountId
     ) -> DispatchResult
     {
-        return Swap::remove_liquidity(origin, asset1, asset2, lp_token_burn, amount1_min_receive, amount2_min_receive, withdraw_to);
+        return Swap::remove_liquidity(origin, asset1.into(), asset2.into(), lp_token_burn, amount1_min_receive, amount2_min_receive, withdraw_to);
     }
 
     fn swap_exact_tokens_for_tokens(
@@ -449,7 +449,9 @@ impl pallet_subtensor::utils::AssetConversionInterface<
         keep_alive:             bool 
     ) -> DispatchResult
     {
-        return Swap::swap_exact_tokens_for_tokens(origin, path, amount_in, amount_out_min, send_to, keep_alive);
+        //return Swap::swap_exact_tokens_for_tokens(origin, converted_path, amount_in, amount_out_min, send_to, keep_alive);
+
+        Ok(())
     }
 
     fn swap_tokens_for_exact_tokens(
@@ -461,7 +463,8 @@ impl pallet_subtensor::utils::AssetConversionInterface<
         keep_alive:             bool 
     ) -> DispatchResult
     {
-        return Swap::swap_tokens_for_exact_tokens(origin, path, amount_out, amount_in_max, send_to, keep_alive);
+        //return Swap::swap_tokens_for_exact_tokens(origin, converted_path, amount_out, amount_in_max, send_to, keep_alive);
+        Ok(())
     }
 }
 
@@ -523,7 +526,7 @@ impl pallet_subtensor::Config for Runtime {
     type CouncilOrigin = EnsureNever<AccountId>;
     type AssetIdParameter = codec::Compact<u32>;
     type AssetId = u32;
-    type Assets = AssetsIntrf;
+    type Assets = AssetsPalletIntrf;
     type AssetConversion = AssetConversionIntrf;
 
     type InitialRho = SubtensorInitialRho;
@@ -653,7 +656,7 @@ parameter_types! {
 	pub const LiquidityWithdrawalFee: Permill = Permill::from_percent(0);  // should be non-zero if AllowMultiAssetPools is true, otherwise can be zero.
 }
 
-use pallet_asset_conversion::{NativeOrAssetIdConverter, NativeOrAssetId};
+use pallet_asset_conversion::{NativeOrAssetIdConverter, NativeOrAssetId, MultiAssetIdConverter};
 impl pallet_asset_conversion::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
@@ -663,7 +666,7 @@ impl pallet_asset_conversion::Config for Runtime {
 	type Balance = Balance;
 	type PoolAssets = PoolAssets;
 	type AssetId = <Self as pallet_assets::Config<SubnetAssets>>::AssetId;
-	type MultiAssetId = NativeOrAssetId<u32>;
+	type MultiAssetId = NativeOrAssetId<<Self as pallet_assets::Config<SubnetAssets>>::AssetId>;
 	type PoolAssetId = <Self as pallet_assets::Config<SwapAssets>>::AssetId;
 	type PalletId = AssetConversionPalletId;
 	type LPFee = ConstU32<3>; // means 0.3%
@@ -674,7 +677,7 @@ impl pallet_asset_conversion::Config for Runtime {
 	type AllowMultiAssetPools = AllowMultiAssetPools;
 	type MaxSwapPathLength = ConstU32<4>;
 	type MintMinLiquidity = MintMinLiquidity;
-	type MultiAssetIdConverter = NativeOrAssetIdConverter<u32>;
+	type MultiAssetIdConverter = NativeOrAssetIdConverter<<Self as pallet_assets::Config<SubnetAssets>>::AssetId>;
 	#[cfg(feature = "runtime-benchmarks")]
 	type BenchmarkHelper = ();
 }
