@@ -397,9 +397,9 @@ impl pallet_subtensor::utils::AssetsInterface<RuntimeOrigin, AssetIdParameter, A
     }
 }
 
-type AssetId        = <Runtime as pallet_asset_conversion::Config>::MultiAssetId;
-type AssetBalance   = <Runtime as pallet_asset_conversion::Config>::AssetBalance;
-struct AssetConversionInterf;
+type AssetId        = <Runtime as pallet_subtensor::Config>::AssetId;
+type AssetBalance   = <Runtime as pallet_balances::Config>::Balance;
+
 impl pallet_subtensor::utils::AssetConversionInterface<
     RuntimeOrigin, 
     AssetId, 
@@ -514,11 +514,17 @@ parameter_types! {
 	pub const SubtensorPalletId: PalletId = PalletId(*b"subtensr");
 }
 
+pub struct AuraPalletIntrf;
+pub struct AssetConversionIntrf;
 impl pallet_subtensor::Config for Runtime {
     type RuntimeEvent = RuntimeEvent;
     type SudoRuntimeCall = RuntimeCall;
     type Currency = Balances;
     type CouncilOrigin = EnsureNever<AccountId>;
+    type AssetIdParameter = codec::Compact<u32>;
+    type AssetId = u32;
+    type Assets = AssetsIntrf;
+    type AssetConversion = AssetConversionIntrf;
 
     type InitialRho = SubtensorInitialRho;
     type InitialKappa = SubtensorInitialKappa;
@@ -565,7 +571,6 @@ impl pallet_subtensor::Config for Runtime {
 
 use sp_runtime::BoundedVec;
 
-pub struct AuraPalletIntrf;
 impl pallet_admin_utils::AuraInterface<AuraId, ConstU32<32>> for AuraPalletIntrf 
 {
     fn change_authorities(new: BoundedVec<AuraId, ConstU32<32>>)
