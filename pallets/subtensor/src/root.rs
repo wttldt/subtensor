@@ -68,10 +68,6 @@ use
             I32F32,
             I64F64
         }
-    },
-    pallet_swap::
-    {
-        Token
     }
 };
 

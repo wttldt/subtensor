@@ -105,13 +105,7 @@ impl<T: Config> Pallet<T>
             let mut token_symbol_arr = [0; 4];
             token_symbol.encode_utf8(&mut token_symbol_arr);
 
-            ensure!(
-                Self::create_new_pool(
-                    Token::TAO(lock_amount),
-                    Token::SubnetToken(netuid_to_register, 1)
-                ).is_ok(),
-                Error::<T>::FailureCreatingSubnetToken
-            );
+            
         }
 
         // --- 6. Set initial and custom parameters for the network.

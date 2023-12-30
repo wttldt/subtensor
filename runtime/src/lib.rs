@@ -14,7 +14,7 @@ use pallet_grandpa::{
 };
 
 use frame_support::pallet_prelude::{DispatchResult, DispatchError};
-use frame_system::{EnsureNever, EnsureRoot, RawOrigin};
+use frame_system::{EnsureNever, EnsureRoot, EnsureSignedBy};
 
 //use pallet_registry::CanRegisterIdentity;
 use sp_api::impl_runtime_apis;
@@ -22,9 +22,9 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
-	traits::{BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, One, Verify, AccountIdLookup},
+	traits::{BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, One, Verify, AccountIdLookup, AccountIdConversion},
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, MultiSignature,
+	ApplyExtrinsicResult, MultiSignature
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -38,7 +38,7 @@ pub use frame_support::{
 	construct_runtime, derive_impl, parameter_types,
 	traits::{
 		ConstBool, ConstU128, ConstU32, ConstU64, ConstU8, ConstU16, KeyOwnerProofSystem, Randomness,
-		StorageInfo,
+		StorageInfo, AsEnsureOriginWithArg
 	},
 	weights::{
 		constants::{
@@ -47,6 +47,8 @@ pub use frame_support::{
 		IdentityFee, Weight,
 	},
 	StorageValue,
+    ord_parameter_types,
+    PalletId,
 };
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
@@ -338,6 +340,63 @@ impl pallet_commitments::Config for Runtime {
     type RateLimit = CommitmentRateLimit;
 }
 
+use frame_support::dispatch::{DispatchErrorWithPostInfo, DispatchResultWithPostInfo, PostDispatchInfo};
+type AssetIdParameter = codec::Compact<u32>;
+pub struct AssetsPalletIntrf;
+impl pallet_subtensor::utils::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Balance> for AssetsPalletIntrf
+{
+    fn force_create(origin: RuntimeOrigin, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult
+    {
+        //return Assets::force_create(origin, id, MultiAddress::from(owner), is_sufficient, min_balance);
+        Ok(())
+    }
+
+    fn force_set_metadata(origin: RuntimeOrigin, id: AssetIdParameter, name: Vec<u8>, symbol: Vec<u8>, decimals: u8, is_frozen: bool) -> DispatchResult
+    {
+        return Assets::force_set_metadata(origin, id, name, symbol, decimals, is_frozen);
+    }
+
+    fn start_destroy(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::start_destroy(origin, id);
+    }
+
+    fn destroy_accounts(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResultWithPostInfo
+    {
+        return Assets::destroy_accounts(origin, id);
+    }
+
+    fn destroy_approvals(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResultWithPostInfo
+    {
+        return Assets::destroy_approvals(origin, id);
+    }
+
+    fn finish_destroy(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResult
+    {
+        return Assets::finish_destroy(origin, id);
+    }
+
+    fn balance(id: AssetIdParameter, who: AccountId) -> Balance {
+        //Assets::balance(id, who)
+        0u64
+    }
+
+    fn burn(origin: RuntimeOrigin, id: AssetIdParameter, who: AccountId, amount: Balance) -> DispatchResult {
+        //Assets::burn(origin, id, who, amount)
+        Ok(())
+    }
+
+    fn mint(origin: RuntimeOrigin, id: AssetIdParameter, beneficiary: AccountId, amount: Balance) -> DispatchResult {
+        //Assets::mint(origin, id, beneficiary, amount)
+        Ok(())
+    }
+
+    fn total_supply(id: AssetIdParameter) -> Balance {
+        //Assets::total_supply(id)
+        0u64
+    }
+}
+
 // Configure the pallet subtensor.
 parameter_types! {
     pub const SubtensorInitialRho: u16 = 10;
@@ -381,6 +440,10 @@ parameter_types! {
     pub const SubtensorInitialSubnetLimit: u16 = 12;
     pub const SubtensorInitialNetworkLockReductionInterval: u64 = 14 * 7200;
     pub const SubtensorInitialNetworkRateLimit: u64 = 1 * 7200;
+}
+
+parameter_types! {
+	pub const SubtensorPalletId: PalletId = PalletId(*b"subtensr");
 }
 
 impl pallet_subtensor::Config for Runtime {
@@ -443,76 +506,28 @@ impl pallet_admin_utils::AuraInterface<AuraId, ConstU32<32>> for AuraPalletIntrf
     }
 }
 
-use frame_system::pallet_prelude::OriginFor;
-use frame_support::dispatch::DispatchErrorWithPostInfo;
-use frame_support::dispatch::PostDispatchInfo;
-use frame_support::dispatch::DispatchResultWithPostInfo;
-type AssetIdParameter = u32;
-pub struct AssetsPalletIntrf;
-impl pallet_swap::AssetsInterface<RuntimeOrigin, AssetIdParameter, AccountId, Balance> for AssetsPalletIntrf
-{
-    fn force_create(origin: RuntimeOrigin, id: AssetIdParameter, owner: AccountId, is_sufficient: bool, min_balance: Balance) -> DispatchResult
-    {
-        //return Assets::force_create(origin, codec::Compact(id), MultiAddress::from(owner), is_sufficient, min_balance);
-        Ok(())
-    }
-
-    fn force_set_metadata(origin: RuntimeOrigin, id: AssetIdParameter, name: Vec<u8>, symbol: Vec<u8>, decimals: u8, is_frozen: bool) -> DispatchResult
-    {
-        return Assets::force_set_metadata(origin, codec::Compact(id), name, symbol, decimals, is_frozen);
-    }
-
-    fn start_destroy(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResult
-    {
-        return Assets::start_destroy(origin, codec::Compact(id));
-    }
-
-    fn destroy_accounts(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResultWithPostInfo
-    {
-        return Assets::destroy_accounts(origin, codec::Compact(id));
-    }
-
-    fn destroy_approvals(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResultWithPostInfo
-    {
-        return Assets::destroy_approvals(origin, codec::Compact(id));
-    }
-
-    fn finish_destroy(origin: RuntimeOrigin, id: AssetIdParameter) -> DispatchResult
-    {
-        return Assets::finish_destroy(origin, codec::Compact(id));
-    }
-}
-
-use pallet_swap::Token as SwapTokenType;
-
-struct SwapIntrf;
-impl pallet_subtensor::SwapInterface<SwapTokenType> for SwapIntrf
-{
-    fn create_new_pool(from: SwapTokenType, to: SwapTokenType) -> DispatchResult
-    {
-        Swap::create_new_pool(from, to);
-
-        Ok(())
-    }
-}
-
 const TAO: u64 = 1_000_000_000;
+
+ord_parameter_types! {
+	pub const SubtensorOrigin: AccountId = AccountIdConversion::<AccountId>::into_account_truncating(&SubtensorPalletId::get());
+}
 
 parameter_types! {
 	pub const AssetDeposit: Balance = 100 * TAO;
 	pub const ApprovalDeposit: Balance = 1 * TAO;
 	pub const StringLimit: u32 = 50;
-	pub const MetadataDepositBase: Balance = TAO / 100;
-	pub const MetadataDepositPerByte: Balance = TAO / 1000;
+	pub const MetadataDepositBase: Balance = 10 * TAO;
+	pub const MetadataDepositPerByte: Balance = 1 * TAO;
 }
 
-impl pallet_assets::Config for Runtime {
+type SubnetAssets = pallet_assets::Instance1;
+impl pallet_assets::Config<SubnetAssets> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type Balance = u64;
+	type Balance = Balance;
 	type AssetId = u32;
 	type AssetIdParameter = codec::Compact<u32>;
 	type Currency = Balances;
-	type CreateOrigin = EnsureNever<AccountId>;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSignedBy<SubtensorOrigin, AccountId>>;
 	type ForceOrigin = EnsureRoot<AccountId>;
 	type AssetDeposit = AssetDeposit;
 	type AssetAccountDeposit = ConstU64<TAO>;
@@ -529,12 +544,66 @@ impl pallet_assets::Config for Runtime {
 	type BenchmarkHelper = ();
 }
 
-impl pallet_swap::Config for Runtime
-{
-    type RuntimeEvent = RuntimeEvent;
-    type WeightInfo = pallet_swap::weights::SubstrateWeight<Runtime>;
-    type Balance = u64;
-    type MaxPools = ConstU16<32>;
+ord_parameter_types! {
+	pub const AssetConversionOrigin: AccountId = AccountIdConversion::<AccountId>::into_account_truncating(&AssetConversionPalletId::get());
+}
+
+type SwapAssets = pallet_assets::Instance2;
+impl pallet_assets::Config<SwapAssets> for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Balance = Balance;
+	type AssetId = u32;
+	type AssetIdParameter = codec::Compact<u32>;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<EnsureSignedBy<AssetConversionOrigin, AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = AssetDeposit;
+	type AssetAccountDeposit = ConstU64<TAO>;
+	type MetadataDepositBase = MetadataDepositBase;
+	type MetadataDepositPerByte = MetadataDepositPerByte;
+	type ApprovalDeposit = ApprovalDeposit;
+	type StringLimit = StringLimit;
+	type Freezer = ();
+	type Extra = ();
+	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+	type RemoveItemsLimit = ConstU32<1000>;
+	type CallbackHandle = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
+}
+
+parameter_types! {
+	pub const AssetConversionPalletId: PalletId = PalletId(*b"py/ascon");
+	pub AllowMultiAssetPools: bool = false;
+	pub const PoolSetupFee: Balance = 1 * TAO; // should be more or equal to the existential deposit
+	pub const MintMinLiquidity: Balance = 100;  // 100 is good enough when the main currency has 10-12 decimals.
+	pub const LiquidityWithdrawalFee: Permill = Permill::from_percent(0);  // should be non-zero if AllowMultiAssetPools is true, otherwise can be zero.
+}
+
+use pallet_asset_conversion::{NativeOrAssetIdConverter, NativeOrAssetId};
+impl pallet_asset_conversion::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type AssetBalance = <Self as pallet_balances::Config>::Balance;
+	type HigherPrecisionBalance = u128;
+	type Assets = Assets;
+	type Balance = Balance;
+	type PoolAssets = PoolAssets;
+	type AssetId = <Self as pallet_assets::Config<SubnetAssets>>::AssetId;
+	type MultiAssetId = NativeOrAssetId<u32>;
+	type PoolAssetId = <Self as pallet_assets::Config<SwapAssets>>::AssetId;
+	type PalletId = AssetConversionPalletId;
+	type LPFee = ConstU32<3>; // means 0.3%
+	type PoolSetupFee = PoolSetupFee;
+	type PoolSetupFeeReceiver = AssetConversionOrigin;
+	type LiquidityWithdrawalFee = LiquidityWithdrawalFee;
+	type WeightInfo = pallet_asset_conversion::weights::SubstrateWeight<Runtime>;
+	type AllowMultiAssetPools = AllowMultiAssetPools;
+	type MaxSwapPathLength = ConstU32<4>;
+	type MintMinLiquidity = MintMinLiquidity;
+	type MultiAssetIdConverter = NativeOrAssetIdConverter<u32>;
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -551,8 +620,9 @@ construct_runtime!(
         Sudo: pallet_sudo,
         Commitments: pallet_commitments,
         AdminUtils: pallet_admin_utils,
-        Assets: pallet_assets,
-        Swap: pallet_swap
+        Assets: pallet_assets::<Instance1>,
+        PoolAssets: pallet_assets::<Instance2>,
+        Swap: pallet_asset_conversion
     }
 );
 
@@ -898,7 +968,7 @@ mod benches {
         [pallet_commitments, Commitments]
         [pallet_admin_utils, AdminUtils]
         [pallet_assets, Assets]
-        [pallet_swap, Swap]
+        [pallet_asset_conversion, Swap]
     );
 }
 

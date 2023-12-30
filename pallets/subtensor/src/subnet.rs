@@ -7,10 +7,6 @@ use
             *
         }
     },
-    pallet_swap::
-    {
-        Token
-    }
 };
 
 impl<T: Config> Pallet<T> 
@@ -633,8 +629,7 @@ impl<T: Config> Pallet<T>
         let owner_coldkey: T::AccountId = SubnetOwner::<T>::get(netuid);
 
         // --- 1. Token liquidation & deletion [!!WAS: Return balance to subnet owner.]
-        Self::liquidate_pool(netuid);
-
+        
         // --- 2. Remove network count.
         {
             SubnetworkN::<T>::remove(netuid);
@@ -777,16 +772,5 @@ impl<T: Config> Pallet<T>
         }
         
         return bonds;
-    }
-
-    pub fn create_new_pool(from: Token, to: Token) -> Result<u16, Error<T>>
-    {
-        Ok(1)
-        //return pallet_swap::create_new_pool(from, to);
-    }
-
-    pub fn liquidate_pool(pool_id: u16)
-    {
-        //pallet_swap::liquidate_pool(pool_id);
     }
 }

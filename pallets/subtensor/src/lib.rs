@@ -98,7 +98,7 @@ mod root;
 mod serving;
 mod staking;
 mod uids;
-mod utils;
+pub mod utils;
 mod weights;
 
 pub mod delegate_info;
