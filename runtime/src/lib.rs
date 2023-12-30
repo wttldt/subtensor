@@ -398,7 +398,7 @@ impl pallet_subtensor::utils::AssetsInterface<RuntimeOrigin, AssetIdParameter, A
 }
 
 type AssetId        = <Runtime as pallet_subtensor::Config>::AssetId;
-type AssetBalance   = <Runtime as pallet_balances::Config>::Balance;
+type AssetBalance   = <<Self as Config>::Currency as Currency<<Self as frame_system::Config>::AccountId>>::Balance;
 
 impl pallet_subtensor::utils::AssetConversionInterface<
     RuntimeOrigin, 
