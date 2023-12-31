@@ -1,5 +1,7 @@
 use crate::utils::AssetsInterface;
 use crate::utils::AssetConversionInterface;
+use pallet_asset_conversion::NativeOrAssetId;
+use pallet_asset_conversion::MultiAssetIdConverter;
 
 impl<T: Config> Pallet<T> 
 {
@@ -108,11 +110,10 @@ impl<T: Config> Pallet<T>
             let mut token_symbol_arr = [0; 4];
             token_symbol.encode_utf8(&mut token_symbol_arr);
 
-            let token_id_p: T::AssetIdParameter = (netuid_to_register as u32).into();
             ensure!(
                 T::Assets::force_create(
                     frame_system::RawOrigin::Root.into(),
-                    token_id_p,
+                    (netuid_to_register as u32).into(),
                     coldkey.clone(),
                     true,
                     Self::u64_to_balance(1).unwrap()
@@ -120,12 +121,14 @@ impl<T: Config> Pallet<T>
                 Error::<T>::FailureCreatingSubnetToken
             );
             
-            let token_id: T::AssetId = (netuid_to_register as u32).into();
             ensure!(
                 T::AssetConversion::create_pool(
                     frame_system::RawOrigin::Root.into(),
-                    token_id.clone(),
-                    token_id.clone()
+                    (netuid_to_register as u32).into(),
+                    pallet_asset_conversion::MultiAssetIdConverter::<
+                        T::AssetId,
+                        u32
+                    >::get_native()
                 ).is_ok(),
                 Error::<T>::FailureCreatingSubnetTokenPool
             );

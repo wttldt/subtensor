@@ -397,7 +397,7 @@ impl pallet_subtensor::utils::AssetsInterface<RuntimeOrigin, AssetIdParameter, A
     }
 }
 
-type AssetId        = <Runtime as pallet_subtensor::Config>::AssetId;
+type AssetId        = NativeOrAssetId<<Runtime as pallet_assets::Config<SubnetAssets>>::AssetId>;
 type AssetBalance   = <Runtime as pallet_balances::Config>::Balance;
 
 impl pallet_subtensor::utils::AssetConversionInterface<
@@ -422,7 +422,7 @@ impl pallet_subtensor::utils::AssetConversionInterface<
         return Swap::add_liquidity(origin, asset1.into(), asset2.into(), amount1_desired, amount2_desired, amount1_min, amount2_min, mint_to);
     }
 
-    fn create_pool(origin: RuntimeOrigin, asset1: AssetId, asset2: AssetId) -> DispatchResult
+    fn create_pool(origin: RuntimeOrigin, asset1: AssetId, asset2: AssetId) -> DispatchResulFat
     {
         return Swap::create_pool(origin, asset1.into(), asset2.into());
     }

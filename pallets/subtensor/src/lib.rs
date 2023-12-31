@@ -113,6 +113,7 @@ pub mod migration;
 #[frame_support::pallet]
 pub mod pallet 
 {
+    use pallet_asset_conversion::NativeOrAssetId;
     #[cfg(feature = "std")]
     use sp_std::prelude::Box;
 
@@ -182,7 +183,8 @@ pub mod pallet
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
         type AssetIdParameter: Parameter + Copy + From<Self::AssetId> + Into<Self::AssetId> + MaxEncodedLen + From<u32>;
-        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen + From<u32>;
+        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen + From<u32> + Ord;
+        type MultiAssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen + From<u32> + Ord;
 
         type Assets: crate::utils::AssetsInterface<
             Self::RuntimeOrigin,
@@ -198,7 +200,7 @@ pub mod pallet
             Self::AccountId,
             ConstU32<4>
         >;
-
+    
         /// A sudo-able call.
         type SudoRuntimeCall: Parameter
             + UnfilteredDispatchable<RuntimeOrigin = Self::RuntimeOrigin>
