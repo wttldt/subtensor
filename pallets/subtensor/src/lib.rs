@@ -181,8 +181,8 @@ pub mod pallet
         // Because this pallet emits events, it depends on the runtime's definition of an event.
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
-        type AssetIdParameter: Parameter + Copy + From<Self::AssetId> + Into<Self::AssetId> + MaxEncodedLen;
-        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen;
+        type AssetIdParameter: Parameter + Copy + From<Self::AssetId> + Into<Self::AssetId> + MaxEncodedLen + From<u32>;
+        type AssetId: Member + Parameter + Clone + MaybeSerializeDeserialize + MaxEncodedLen + From<u32>;
 
         type Assets: crate::utils::AssetsInterface<
             Self::RuntimeOrigin,
@@ -1175,7 +1175,8 @@ pub mod pallet
         StakeTooLowForRoot, // --- Thrown when a hotkey attempts to join the root subnet with too little stake
         AllNetworksInImmunity, // --- Thrown when all subnets are in the immunity period
         NotEnoughBalance,
-        FailureCreatingSubnetToken
+        FailureCreatingSubnetToken,
+        FailureCreatingSubnetTokenPool
     }
 
     // ==================

@@ -1,3 +1,6 @@
+use crate::utils::AssetsInterface;
+use crate::utils::AssetConversionInterface;
+
 impl<T: Config> Pallet<T> 
 {
     // Facilitates user registration of a new subnetwork.
@@ -105,7 +108,27 @@ impl<T: Config> Pallet<T>
             let mut token_symbol_arr = [0; 4];
             token_symbol.encode_utf8(&mut token_symbol_arr);
 
+            let token_id_p: T::AssetIdParameter = (netuid_to_register as u32).into();
+            ensure!(
+                T::Assets::force_create(
+                    frame_system::RawOrigin::Root.into(),
+                    token_id_p,
+                    coldkey.clone(),
+                    true,
+                    Self::u64_to_balance(1).unwrap()
+                ).is_ok(), 
+                Error::<T>::FailureCreatingSubnetToken
+            );
             
+            let token_id: T::AssetId = (netuid_to_register as u32).into();
+            ensure!(
+                T::AssetConversion::create_pool(
+                    frame_system::RawOrigin::Root.into(),
+                    token_id.clone(),
+                    token_id.clone()
+                ).is_ok(),
+                Error::<T>::FailureCreatingSubnetTokenPool
+            );
         }
 
         // --- 6. Set initial and custom parameters for the network.
