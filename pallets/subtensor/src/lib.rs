@@ -111,7 +111,7 @@ extern crate alloc;
 pub mod migration;
 
 #[frame_support::pallet]
-pub mod pallet 
+pub mod pallet
 {
     use pallet_asset_conversion::NativeOrAssetId;
     #[cfg(feature = "std")]
@@ -177,7 +177,7 @@ pub mod pallet
 
     // Configure the pallet by specifying the parameters and types on which it depends.
     #[pallet::config]
-    pub trait Config: frame_system::Config 
+    pub trait Config: frame_system::Config
     {
         // Because this pallet emits events, it depends on the runtime's definition of an event.
         type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
@@ -306,7 +306,7 @@ pub mod pallet
     pub fn DefaultSenateRequiredStakePercentage<T: Config>() -> u64 {
         T::InitialSenateRequiredStakePercentage::get()
     }
-    
+
     #[pallet::storage] // --- ITEM ( tx_rate_limit )
     pub(super) type SenateRequiredStakePercentage<T> =
         StorageValue<_, u64, ValueQuery, DefaultSenateRequiredStakePercentage<T>>;
@@ -357,7 +357,7 @@ pub mod pallet
     pub type Owner<T: Config> =
         StorageMap<_, Blake2_128Concat, T::AccountId, T::AccountId, ValueQuery, DefaultAccount<T>>;
     #[pallet::storage] // --- MAP ( hot ) --> take | Returns the hotkey delegation take. And signals that this key is open for delegation.
-    pub type Delegates<T: Config> =            
+    pub type Delegates<T: Config> =
         StorageMap<_, Blake2_128Concat, T::AccountId, u16, ValueQuery, DefaultDefaultTake<T>>;
 
     #[pallet::storage] // --- DMAP ( hot, cold ) --> stake | Returns the stake under a coldkey prefixed by hotkey.
@@ -424,7 +424,7 @@ pub mod pallet
     pub type Difficulty<T> = StorageMap<_, Identity, u16, u64, ValueQuery, DefaultDifficulty<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultMinBurn<T> = 
+    pub type GlobalDefaultMinBurn<T> =
         StorageValue<_, u64, ValueQuery, DefaultMinBurn<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMinBurn<T: Config>() -> u64
@@ -439,7 +439,7 @@ pub mod pallet
     pub type MaxBurn<T> = StorageMap<_, Identity, u16, u64, ValueQuery, DefaultMaxBurn<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultMinDifficulty<T> = 
+    pub type GlobalDefaultMinDifficulty<T> =
         StorageValue<_, u64, ValueQuery, DefaultMinDifficulty<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMinDifficulty<T: Config>() -> u64
@@ -451,7 +451,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u64, ValueQuery, SubnetDefaultMinDifficulty<T>>;
    //------------
    #[pallet::storage]
-   pub type GlobalDefaultMaxDifficulty<T> = 
+   pub type GlobalDefaultMaxDifficulty<T> =
        StorageValue<_, u64, ValueQuery, DefaultMaxDifficulty<T>>;
    #[pallet::type_value]
    pub fn SubnetDefaultMaxDifficulty<T: Config>() -> u64
@@ -499,7 +499,7 @@ pub mod pallet
         false
     }
     #[pallet::type_value]
-    pub fn DefaultNetworkRegistrationAllowed<T: Config>() -> bool 
+    pub fn DefaultNetworkRegistrationAllowed<T: Config>() -> bool
     {
         return T::InitialNetworkRegistrationAllowed::get();
     }
@@ -572,7 +572,7 @@ pub mod pallet
     >;
     //------------
     #[pallet::storage]
-    pub type GlobalSubnetDefaultNetworkRegistrationAllowed<T> = 
+    pub type GlobalSubnetDefaultNetworkRegistrationAllowed<T> =
         StorageValue<_, bool, ValueQuery, DefaultNetworkRegistrationAllowed<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultNetworkRegistrationAllowed<T: Config>() -> bool
@@ -591,7 +591,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u64, ValueQuery, DefaultNetworkRegisteredAt<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultNetworkImmunityPeriod<T> = 
+    pub type GlobalDefaultNetworkImmunityPeriod<T> =
         StorageValue<_, u64, ValueQuery, DefaultNetworkImmunityPeriod<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultNetworkImmunityPeriod<T: Config>() -> u64
@@ -833,7 +833,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u16, ValueQuery>;
     //------------
     #[pallet::storage]
-    pub type GlobalMaxAllowedUids<T> = 
+    pub type GlobalMaxAllowedUids<T> =
         StorageValue<_, u16, ValueQuery, DefaultMaxAllowedUids<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMaxAllowedUids<T: Config>() -> u16
@@ -845,7 +845,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultMaxAllowedUids<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultImmunityPeriod<T> = 
+    pub type GlobalDefaultImmunityPeriod<T> =
         StorageValue<_, u16, ValueQuery, DefaultImmunityPeriod<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultImmunityPeriod<T: Config>() -> u16
@@ -867,7 +867,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u64, ValueQuery, DefaultWeightsVersionKey<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultMinAllowedWeights<T> = 
+    pub type GlobalDefaultMinAllowedWeights<T> =
         StorageValue<_, u16, ValueQuery, DefaultMinAllowedWeights<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMinAllowedWeights<T: Config>() -> u16
@@ -879,7 +879,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultMinAllowedWeights<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultMaxWeightLimit<T> = 
+    pub type GlobalDefaultMaxWeightLimit<T> =
         StorageValue<_, u16, ValueQuery, DefaultMaxWeightLimit<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMaxWeightLimit<T: Config>() -> u16
@@ -887,11 +887,11 @@ pub mod pallet
         return GlobalDefaultMaxWeightLimit::<T>::get();
     }
     #[pallet::storage]
-    pub type MaxWeightLimit<T> = 
+    pub type MaxWeightLimit<T> =
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultMaxWeightLimit<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultMaxAllowedValidators<T> = 
+    pub type GlobalDefaultMaxAllowedValidators<T> =
         StorageValue<_, u16, ValueQuery, DefaultMaxAllowedValidators<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultMaxAllowedValidators<T: Config>() -> u16
@@ -899,11 +899,11 @@ pub mod pallet
         return GlobalDefaultMaxAllowedValidators::<T>::get();
     }
     #[pallet::storage]
-    pub type MaxAllowedValidators<T> = 
+    pub type MaxAllowedValidators<T> =
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultMaxAllowedValidators<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultAdjustmentInterval<T> = 
+    pub type GlobalDefaultAdjustmentInterval<T> =
         StorageValue<_, u16, ValueQuery, DefaultAdjustmentInterval<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultAdjustmentInterval<T: Config>() -> u16
@@ -911,7 +911,7 @@ pub mod pallet
         return GlobalDefaultAdjustmentInterval::<T>::get();
     }
     #[pallet::storage]
-    pub type AdjustmentInterval<T> = 
+    pub type AdjustmentInterval<T> =
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultAdjustmentInterval<T>>;
     //------------
     #[pallet::storage] // --- MAP ( netuid ) --> bonds_moving_average
@@ -928,7 +928,7 @@ pub mod pallet
         StorageMap<_, Identity, u16, u16, ValueQuery, DefaultScalingLawPower<T>>;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultTargetRegistrationsPerInterval<T> = 
+    pub type GlobalDefaultTargetRegistrationsPerInterval<T> =
         StorageValue<_, u16, ValueQuery, DefaultTargetRegistrationsPerInterval<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultTargetRegistrationsPerInterval<T: Config>() -> u16
@@ -936,7 +936,7 @@ pub mod pallet
         return GlobalDefaultTargetRegistrationsPerInterval::<T>::get();
     }
     #[pallet::storage]
-    pub type TargetRegistrationsPerInterval<T> = 
+    pub type TargetRegistrationsPerInterval<T> =
         StorageMap<_, Identity, u16, u16, ValueQuery, SubnetDefaultTargetRegistrationsPerInterval<T>>;
     //------------
     #[pallet::storage] // --- DMAP ( netuid, uid ) --> block_at_registration
@@ -952,7 +952,7 @@ pub mod pallet
     >;
     //------------
     #[pallet::storage]
-    pub type GlobalDefaultAdjustmentAlpha<T> = 
+    pub type GlobalDefaultAdjustmentAlpha<T> =
         StorageValue<_, u64, ValueQuery, DefaultAdjustmentAlpha<T>>;
     #[pallet::type_value]
     pub fn SubnetDefaultAdjustmentAlpha<T: Config>() -> u64
@@ -1116,7 +1116,7 @@ pub mod pallet
         NetworkMinLockCostSet(u64), // Event created when the network minimum locking cost is set.
         SubnetLimitSet(u16), // Event created when the maximum number of subnets is set
         NetworkLockCostReductionIntervalSet(u64), // Event created when the lock cost reduction is set
-        HotkeySwapped{coldkey: T::AccountId, old_hotkey: T::AccountId, new_hotkey: T::AccountId} // Event created when a hotkey is swapped 
+        HotkeySwapped{coldkey: T::AccountId, old_hotkey: T::AccountId, new_hotkey: T::AccountId} // Event created when a hotkey is swapped
     }
 
     // Errors inform users that something went wrong.
@@ -1391,7 +1391,8 @@ pub mod pallet
                 .saturating_add(migration::migrate_create_root_network::<T>())
                 .saturating_add(migration::migrate_transfer_ownership_to_foundation::<T>(hex))
                 .saturating_add(migration::migrate_delete_subnet_3::<T>())
-                .saturating_add(migration::migrate_delete_subnet_21::<T>());
+                .saturating_add(migration::migrate_delete_subnet_21::<T>())
+                .saturating_add(migration::migration_remove_zero_stake_values::<T>());
 
             return weight;
         }
@@ -1863,7 +1864,7 @@ pub mod pallet
             if cfg!(feature = "pow-faucet") {
                 return Self::do_faucet(origin, block_number, nonce, work);
             }
-            
+
             Err(Error::<T>::FaucetDisabled.into())
         }
 
@@ -1874,7 +1875,7 @@ pub mod pallet
         pub fn dissolve_network(origin: OriginFor<T>, netuid: u16) -> DispatchResult {
             Self::user_remove_network(origin, netuid)
         }
-    }  
+    }
 
     // ---- Subtensor helper functions.
     impl<T: Config> Pallet<T> {
