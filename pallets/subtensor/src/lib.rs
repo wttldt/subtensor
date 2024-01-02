@@ -98,6 +98,7 @@ mod staking;
 mod uids;
 mod utils;
 mod weights;
+mod try_runtime;
 
 pub mod delegate_info;
 pub mod neuron_info;
