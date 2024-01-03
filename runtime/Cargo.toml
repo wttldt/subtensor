@@ -45,6 +45,7 @@ sp-genesis-builder = { default-features = false, git = "https://github.com/parit
 pallet-subtensor = { version = "4.0.0-dev", default-features = false, path = "../pallets/subtensor" }
 pallet-registry = { version = "4.0.0-dev", default-features = false, path = "../pallets/registry" }
 pallet-admin-utils = { version = "4.0.0-dev", default-features = false, path = "../pallets/admin-utils" }
+pallet-governance = { version = "4.0.0-dev", default-features = false, path = "../pallets/governance" }
 pallet-aura = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
 pallet-balances = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
 pallet-grandpa = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk", branch = "release-polkadot-v1.4.0" }
