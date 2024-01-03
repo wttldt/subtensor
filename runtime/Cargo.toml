@@ -138,5 +138,6 @@ try-runtime = [
 	"pallet-sudo/try-runtime",
 	"pallet-timestamp/try-runtime",
 	"pallet-transaction-payment/try-runtime",
-	"pallet-subtensor/try-runtime"
+	"pallet-subtensor/try-runtime",
+	"dep:frame-try-runtime"
 ]

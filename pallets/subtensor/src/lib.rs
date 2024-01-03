@@ -91,6 +91,8 @@ mod staking;
 mod uids;
 mod utils;
 mod weights;
+
+#[cfg(feature = "try-runtime")]
 mod try_runtime;
 
 pub mod delegate_info;
