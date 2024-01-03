@@ -10,6 +10,19 @@ pub mod weights;
 pub use pallet::*;
 pub use weights::WeightInfo;
 
+use sp_runtime::traits::{Dispatchable};
+use frame_support::dispatch::{PostDispatchInfo, GetDispatchInfo};
+
+struct Vote {
+
+}
+
+enum Member {
+	Triumvirate(),
+	SubnetOwner,
+	RootNetwork
+}
+
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
@@ -26,6 +39,14 @@ pub mod pallet {
 		// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
+		/// The runtime call dispatch type.
+		type Proposal: Parameter
+		+ Dispatchable<
+			RuntimeOrigin = <Self as frame_system::Config>::RuntimeOrigin,
+			PostInfo = PostDispatchInfo,
+		> + From<frame_system::Call<Self>>
+		+ GetDispatchInfo;
+	
 		// Weight information for extrinsics in this pallet.
 		type WeightInfo: WeightInfo;
 	}
