@@ -53,18 +53,24 @@ impl<T: StubConfig> OnRuntimeUpgrade for Stub<T>
     #[cfg(feature = "try-runtime")]
     fn pre_upgrade() -> Result<Vec<u8>, sp_runtime::TryRuntimeError> 
     {
+        log::info!("hello from stub::pre_upgrade");
+
         return Ok(vec![]);
     }
 
     #[cfg(feature = "try-runtime")]
     fn on_runtime_upgrade() -> frame_support::weights::Weight
     {
+        log::info!("hello from stub::on_runtime_upgrade");
+
         return T::DbWeight::get().reads_writes(0, 0);
     }
 
     #[cfg(feature = "try-runtime")]
-    fn post_upgrade(account_reserved_before_bytes: Vec<u8>) -> Result<(), sp_runtime::TryRuntimeError>
+    fn post_upgrade(state: Vec<u8>) -> Result<(), sp_runtime::TryRuntimeError>
     {
+        log::info!("hello from stub::post_upgrade");
+
         return Ok(());  
     }
 }
