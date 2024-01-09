@@ -149,7 +149,7 @@ pub mod pallet {
 			<LastCommitment<T>>::insert(netuid, &who, cur_block);
 			Self::deposit_event(Event::Commitment { netuid, who });
 
-			Ok(().into())
+			Ok(())
 		}
 	}
 }
@@ -167,15 +167,13 @@ impl<A> CanCommit<A> for () {
     CallType definition
 ************************************************************/
 #[derive(Debug, PartialEq)]
+#[derive(Default)]
 pub enum CallType {
     SetCommitment,
+    #[default]
     Other,
 }
-impl Default for CallType {
-    fn default() -> Self {
-        CallType::Other
-    }
-}
+
 
 use {
 	frame_support::{
@@ -209,6 +207,16 @@ use {
 
 #[derive(Encode, Decode, Clone, Eq, PartialEq, TypeInfo)]
 pub struct CommitmentsSignedExtension<T: Config + Send + Sync + TypeInfo>(pub PhantomData<T>);
+
+impl<T: Config + Send + Sync + TypeInfo> Default for CommitmentsSignedExtension<T>
+where
+    T::RuntimeCall: Dispatchable<Info = DispatchInfo, PostInfo = PostDispatchInfo>,
+    <T as frame_system::Config>::RuntimeCall: IsSubType<Call<T>>,
+ {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl<T: Config + Send + Sync + TypeInfo> CommitmentsSignedExtension<T>
 where
@@ -298,12 +306,8 @@ where
         _len: usize,
         _result: &DispatchResult,
     ) -> Result<(), TransactionValidityError> {
-        if let Some((call_type, _transaction_fee, _who)) = maybe_pre {
-            match call_type {
-                _ => {
-                    ()
-                }
-            }
+        if let Some((_call_type, _transaction_fee, _who)) = maybe_pre {
+            
         }
         Ok(())
     }
